@@ -1,0 +1,95 @@
+-- extracted from rfc2578.txt
+-- at Mon Nov 15 17:12:02 1999
+
+SNMPv2-SMI DEFINITIONS ::= BEGIN
+
+
+-- the path to the root
+
+org            OBJECT IDENTIFIER ::= { iso 3 }  --  "iso" = 1
+dod            OBJECT IDENTIFIER ::= { org 6 }
+internet       OBJECT IDENTIFIER ::= { dod 1 }
+
+directory      OBJECT IDENTIFIER ::= { internet 1 }
+
+mgmt           OBJECT IDENTIFIER ::= { internet 2 }
+mib-2          OBJECT IDENTIFIER ::= { mgmt 1 }
+transmission   OBJECT IDENTIFIER ::= { mib-2 10 }
+
+experimental   OBJECT IDENTIFIER ::= { internet 3 }
+
+private        OBJECT IDENTIFIER ::= { internet 4 }
+enterprises    OBJECT IDENTIFIER ::= { private 1 }
+
+security       OBJECT IDENTIFIER ::= { internet 5 }
+
+snmpV2         OBJECT IDENTIFIER ::= { internet 6 }
+
+-- transport domains
+snmpDomains    OBJECT IDENTIFIER ::= { snmpV2 1 }
+
+-- transport proxies
+snmpProxys     OBJECT IDENTIFIER ::= { snmpV2 2 }
+
+-- module identities
+snmpModules    OBJECT IDENTIFIER ::= { snmpV2 3 }
+
+-- Extended UTCTime, to allow dates with four-digit years
+-- (Note that this definition of ExtUTCTime is not to be IMPORTed
+--  by MIB modules.)
+ExtUTCTime ::= OCTET STRING(SIZE(11 | 13))
+    -- format is YYMMDDHHMMZ or YYYYMMDDHHMMZ
+    --   where: YY   - last two digits of year (only years
+    --                 between 1900-1999)
+    --          YYYY - last four digits of the year (any year)
+    --          MM   - month (01 through 12)
+    --          DD   - day of month (01 through 31)
+    --          HH   - hours (00 through 23)
+    --          MM   - minutes (00 through 59)
+    --          Z    - denotes GMT (the ASCII character Z)
+    --
+    -- For example, "9502192015Z" and "199502192015Z" represent
+    -- 8:15pm GMT on 19 February 1995. Years after 1999 must use
+    -- the four digit year format. Years 1900-1999 may use the
+    -- two or four digit format.
+
+-- MACRO definitions removed because they are not SMI
+--
+
+-- definitions of administrative identifiers
+
+zeroDotZero    OBJECT-IDENTITY
+    STATUS     current
+    DESCRIPTION
+            "A value used for null identifiers."
+    ::= { 0 0 }
+
+END
+
+-- 
+--    Copyright (C) The Internet Society (1999).  All Rights Reserved.
+-- 
+--    This document and translations of it may be copied and furnished to
+--    others, and derivative works that comment on or otherwise explain it
+--    or assist in its implementation may be prepared, copied, published
+--    and distributed, in whole or in part, without restriction of any
+--    kind, provided that the above copyright notice and this paragraph are
+--    included on all such copies and derivative works.  However, this
+--    document itself may not be modified in any way, such as by removing
+--    the copyright notice or references to the Internet Society or other
+--    Internet organizations, except as needed for the purpose of
+--    developing Internet standards in which case the procedures for
+--    copyrights defined in the Internet Standards process must be
+--    followed, or as required to translate it into languages other than
+--    English.
+-- 
+--    The limited permissions granted above are perpetual and will not be
+--    revoked by the Internet Society or its successors or assigns.
+-- 
+--    This document and the information contained herein is provided on an
+--    "AS IS" basis and THE INTERNET SOCIETY AND THE INTERNET ENGINEERING
+--    TASK FORCE DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING
+--    BUT NOT LIMITED TO ANY WARRANTY THAT THE USE OF THE INFORMATION
+--    HEREIN WILL NOT INFRINGE ANY RIGHTS OR ANY IMPLIED WARRANTIES OF
+--    MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE."
+

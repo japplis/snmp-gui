@@ -1,0 +1,4 @@
+Manifest-Version: 2.0
+Required-Version: 1.0
+Main-Class: com.tryllian.snmp.gui.SnmpGui
+Class-Path: lib/opennms_joesnmp.jar lib/agentapi.jar lib/java_cup.jar

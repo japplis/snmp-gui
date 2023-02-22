@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    This is the Ant buildfile for building the SNMP GUI application.
+-->
+
+<project name="snmp-gui" default="all" basedir=".">
+
+    <!--
+        Initialization target. All other targets should depend on this
+        target. It reads the necessary properties from the build.properties
+        file
+     -->
+    <target name="init">
+        <property name="relative.source" value="src" />
+        <property name="relative.compiled" value="classes" />
+        <property name="relative.javadoc" value="javadoc" />
+        <property name="classpath.snmp" value="lib/agentapi.jar:lib/java_cup.jar:lib/opennms_joesnmp.jar" />
+        <property name="relative.jarfiles" value="build" />
+    </target>
+
+    <target name="all" depends="jars"/>
+
+    <!--
+        Compile the entire source
+    -->
+    <target name="compile" depends="init">
+        <echo message="compile started"/>
+
+        <mkdir      dir="${relative.compiled}"/>
+        <javac      srcdir="${relative.source}"
+                    destdir="${relative.compiled}"
+                    classpath="${classpath.snmp}"
+                    debug="true"
+                    optimize="false"
+        />
+        <copy todir="${relative.compiled}">
+            <fileset dir="${relative.source}">
+                <include name="**/*.png" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!--
+        Builds the javadoc
+    -->
+    <target name="javadoc" depends="init">
+        <mkdir dir="${relative.javadoc}"/>
+        <javadoc    packagenames="com.*"
+                    sourcepath="${relative.source}"
+                    destdir="${relative.javadoc}"
+                    classpath="${classpath.snmp}"
+        /> 
+    </target>
+
+    <!--
+        Create the jarfile
+    -->
+    <target name="jars" depends="compile">
+
+        <mkdir      dir="${relative.jarfiles}"/>
+        <jar        jarfile="${relative.jarfiles}/snmpgui.jar"
+                    basedir="${relative.compiled}"
+                    compress="true"
+                    manifest="Manifest"
+        />
+    </target>
+
+    <!--
+        target to run the snmp GUI application
+     -->
+    <target name="run" depends="jars">
+        <echo message="Starting the SNMP GUI"/>
+        <!--copy file="../TRYLLIAN-HABITAT.mib" todir="../../config"/>
+        <copy file="../SNMPv2-SMI"           todir="../../config"/>
+        <copy file="../SNMPv2-TC"            todir="../../config"/-->
+        <java       classname="com.tryllian.snmp.gui.SnmpGui"
+                    classpath="${classpath.snmp}:${relative.jarfiles}/snmpgui.jar"
+                    fork="true">
+            <sysproperty key="apple.laf.useScreenMenuBar"
+                         value="true"/>
+        </java>    
+    </target>
+
+    <!--
+        Make the release
+    -->
+    <target name="release" depends="jars" description="Creates the release.">
+        <zip destfile="${relative.jarfiles}/snmp-gui.zip">
+            <zipfileset dir="." includes="*.license" prefix="snmp-gui" />
+            <zipfileset dir="." includes="*.html" prefix="snmp-gui" />
+            <zipfileset dir="." includes="SNMP*" prefix="snmp-gui" />
+            <zipfileset dir="." includes="TRYLLIAN*" prefix="snmp-gui" />
+            <zipfileset dir="." includes="snmp.properties" prefix="snmp-gui" />
+            <zipfileset dir="." includes="lib/*" prefix="snmp-gui" />
+            <zipfileset dir="${relative.jarfiles}" includes="snmpgui.jar" prefix="snmp-gui" />
+        </zip>
+        <zip destfile="${relative.jarfiles}/snmp-gui-src.zip" basedir=".">
+            <include name="*.*" />
+            <include name="SNMP*" />
+            <include name="Manifest" />
+            <include name="src/**/*" />
+            <exclude name="**/*~" />
+        </zip>
+        <copy todir="../../japplis/snmp-gui">
+            <fileset dir="${relative.jarfiles}">
+                <include name="snmp-gui.zip" />
+                <include name="snmp-gui-src.zip" />
+            </fileset>
+        </copy>
+    </target>
+
+    <!-- 
+        clean classes, jars, and agents 
+    -->
+    <target name ="clean" depends="init">
+        <!-- delete all class files -->
+        <delete>
+            <fileset dir="${relative.compiled}" includes="**/*.class"/>
+        </delete>
+        <!-- delete all jar files -->
+        <delete>
+            <fileset dir="${relative.jarfiles}" includes="**/*.jar"/>
+        </delete>
+    </target>
+
+</project>
+

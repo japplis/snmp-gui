@@ -1,0 +1,11 @@
+The agentapi library is normally distributed under the GPL but Tryllian 
+and Anthony Goubard have special permission to distribute this library 
+under the LGPL.
+
+Rui Pedro Lopes <rlopes@ipb.pt> writes for Tryllian:
+
+  I hereby grant Tryllian the right to distribute the Agent API code as can
+  be found at http://nms.estig.ipb.pt/agent_api/agentapi_dist.jar under the
+  terms of the GNU Lesser General Public License (LGPL) regardeless of the
+  license mentioned on the source code.
+

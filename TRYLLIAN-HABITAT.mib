@@ -1,0 +1,601 @@
+TRYLLIAN-HABITAT DEFINITIONS ::= BEGIN
+
+IMPORTS
+	TEXTUAL-CONVENTION
+		FROM SNMPv2-TC
+	enterprises,
+	MODULE-IDENTITY,
+	OBJECT-TYPE,
+	Counter64
+		FROM SNMPv2-SMI;
+
+tryllian MODULE-IDENTITY
+	LAST-UPDATED "200402031421Z"	-- Feb 02, 2004 2:21:00 PM
+	ORGANIZATION "Tryllian Solutions BV"
+	CONTACT-INFO
+		"Peter Tax
+		ecotax@tryllian.com"
+	DESCRIPTION
+		"MIB for the SNMP agent in a Tryllian Habitat (ADK v3.0)."
+	REVISION "200402031421Z"	-- Feb 02, 2004 2:21:00 PM
+	DESCRIPTION
+"Initial version."
+ -- 1.3.6.1.4.1.9727 --  ::= { enterprises 9727 }
+
+
+AgentRef ::= TEXTUAL-CONVENTION
+	STATUS current
+	DESCRIPTION
+"The OID of a particular agent.
+This refers to an entry in the agents table.
+Part of the OID is derived from the agents IDReference."
+	SYNTAX OBJECT IDENTIFIER
+
+
+habitat OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1 --  ::= { tryllian 1 }
+
+
+system OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1 --  ::= { habitat 1 }
+
+
+----------------------------
+--The Habitat System Agent
+----------------------------
+
+habitatSystemAgent OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.1 --  ::= { system 1 }
+
+hsaAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address of the Habitat System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.1.1 --  ::= { habitatSystemAgent 1 }
+
+hsaName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the Habitat System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.1.2 --  ::= { habitatSystemAgent 2 }
+
+hsaIDReference OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference of the Habitat System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.1.3 --  ::= { habitatSystemAgent 3 }
+
+hsaAction OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.1.4 --  ::= { habitatSystemAgent 4 }
+
+hsaActionNumber OBJECT-TYPE
+	SYNTAX INTEGER {
+			none(0),
+			reloadpermissions(1),
+			jndiresolve(2),
+			createagent(3),
+			shutdown-habitat(4) }
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+"A (settable) number representing a habitat action request.
+1 = reload-permissions
+2 = jndi-resolve  (query   taken from hsaActionParameter)
+3 = create-agent  (dnafile taken from hsaActionParameter)
+4 = shutdown-habitat"
+ -- 1.3.6.1.4.1.9727.1.1.1.4.1 --  ::= { hsaAction 1 }
+
+hsaActionParameter OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+"Parameter for the next requested habitat action.
+Should be set BEFORE requesting the action, if applicable."
+ -- 1.3.6.1.4.1.9727.1.1.1.4.2 --  ::= { hsaAction 2 }
+
+hsaActionResult OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+"Result value of the latest requested habitat action.
+(Made settable only to allow clearing a previous result.)"
+ -- 1.3.6.1.4.1.9727.1.1.1.4.3 --  ::= { hsaAction 3 }
+
+
+-------------------------------
+--The Statistics System Agent
+-------------------------------
+
+statisticsSystemAgent OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.2 --  ::= { system 2 }
+
+ssaAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address of the Statistics System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.2.1 --  ::= { statisticsSystemAgent 1 }
+
+ssaName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the Statistics System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.2.2 --  ::= { statisticsSystemAgent 2 }
+
+ssaIDReference OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference of the Statistics System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.2.3 --  ::= { statisticsSystemAgent 3 }
+
+ssaProperties OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.2.4 --  ::= { statisticsSystemAgent 4 }
+
+ssaAgentCount OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The total number of agents in the habitat"
+ -- 1.3.6.1.4.1.9727.1.1.2.4.1 --  ::= { ssaProperties 1 }
+
+
+ssaConnectionCount OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The number of network connections currently open"
+ -- 1.3.6.1.4.1.9727.1.1.2.4.2 --  ::= { ssaProperties 2 }
+
+ssaEventCount OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The number of events that the habitat has processed so far"
+ -- 1.3.6.1.4.1.9727.1.1.2.4.3 --  ::= { ssaProperties 3 }
+
+
+ssaMemoryUsed OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The amount of memory (in bytes) used by the habitat"
+ -- 1.3.6.1.4.1.9727.1.1.2.4.4 --  ::= { ssaProperties 4 }
+
+
+ssaMessageCount OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The total number of messages in the queue"
+ -- 1.3.6.1.4.1.9727.1.1.2.4.5 --  ::= { ssaProperties 5 }
+
+
+ssaMessageTraffic OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The average number of messages processed per second"
+ -- 1.3.6.1.4.1.9727.1.1.2.4.6 --  ::= { ssaProperties 6 }
+
+
+------------------------------------
+--The Agentstatistics System Agent
+------------------------------------
+
+agentStatisticsSystemAgent OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.3 --  ::= { system 3 }
+
+asaAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address of the Agenstatistics System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.3.1 --  ::= { agentStatisticsSystemAgent 1 }
+
+asaName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the Agentstatistics System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.3.2 --  ::= { agentStatisticsSystemAgent 2 }
+
+asaIDReference OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference of the Agentstatistics System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.3.3 --  ::= { agentStatisticsSystemAgent 3 }
+
+
+-------------------------------
+--The Properties System Agent
+-------------------------------
+
+propertiesSystemAgent OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.4 --  ::= { system 4 }
+
+psaAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address of the Properties System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.4.1 --  ::= { propertiesSystemAgent 1 }
+
+psaName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the Properties System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.4.2 --  ::= { propertiesSystemAgent 2 }
+
+psaIDReference OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference of the Properties System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.4.3 --  ::= { propertiesSystemAgent 3 }
+
+propertiesTable OBJECT-TYPE
+	SYNTAX SEQUENCE OF PropertiesEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+"Table of habitat properties"
+ -- 1.3.6.1.4.1.9727.1.1.4.4 --  ::= { propertiesSystemAgent 4 }
+
+propertiesEntry OBJECT-TYPE
+	SYNTAX PropertiesEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+		"Entry in the habitat properties table"
+	INDEX {
+		propertyName }
+ -- 1.3.6.1.4.1.9727.1.1.4.4.1 --  ::= { propertiesTable 1 }
+
+PropertiesEntry ::= SEQUENCE {
+	propertyName  OCTET STRING,
+	propertyValue OCTET STRING }
+
+propertyName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the property"
+ -- 1.3.6.1.4.1.9727.1.1.4.4.1.1 --  ::= { propertiesEntry 1 }
+
+propertyValue OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+"Value of the property"
+ -- 1.3.6.1.4.1.9727.1.1.4.4.1.2 --  ::= { propertiesEntry 2 }
+ 
+ 
+--
+--The Echo System Agent
+--
+
+echoSystemAgent OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.5 --  ::= { system 5 }
+
+esaAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address of the Echo System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.5.1 --  ::= { echoSystemAgent 1 }
+
+esaName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the Echo System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.5.2 --  ::= { echoSystemAgent 2 }
+
+esaIDReference OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference of the Echo System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.5.3 --  ::= { echoSystemAgent 3 }
+ 
+ 
+--------------------------------
+--The Transporter System Agent
+--------------------------------
+
+transporterSystemAgent OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.1.6 --  ::= { system 6 }
+
+tsaAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address of the Transporter System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.6.1 --  ::= { transporterSystemAgent 1 }
+
+tsaName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Name of the Transporter System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.6.2 --  ::= { transporterSystemAgent 2 }
+
+tsaIDReference OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference of the Transporter System Agent"
+ -- 1.3.6.1.4.1.9727.1.1.6.3 --  ::= { transporterSystemAgent 3 }
+
+
+----------------------
+--The Services Table
+----------------------
+
+services OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.2 --  ::= { habitat 2 }
+
+servicesTable OBJECT-TYPE
+	SYNTAX SEQUENCE OF ServicesEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+"Table of services"
+ -- 1.3.6.1.4.1.9727.1.2.1 --  ::= { services 1 }
+
+servicesEntry OBJECT-TYPE
+	SYNTAX ServicesEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+		"Entry in the table of services"
+	INDEX {
+		serviceName }
+ -- 1.3.6.1.4.1.9727.1.2.1.1 --  ::= { servicesTable 1 }
+
+ServicesEntry ::= SEQUENCE {
+
+	serviceName  OCTET STRING,
+	serviceAgent AgentRef }
+
+
+serviceName OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+		"The name of the service"
+ -- 1.3.6.1.4.1.9727.1.2.1.1.1 --  ::= { servicesEntry 1 }
+
+serviceAgent OBJECT-TYPE
+	SYNTAX AgentRef
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Reference to the agent providing the service"
+ -- 1.3.6.1.4.1.9727.1.2.1.1.2 --  ::= { servicesEntry 2 }
+
+agents OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.3 --  ::= { habitat 3 }
+
+agentsTable OBJECT-TYPE
+	SYNTAX SEQUENCE OF AgentsEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+"Table of all agents"
+ -- 1.3.6.1.4.1.9727.1.3.1 --  ::= { agents 1 }
+
+agentsEntry OBJECT-TYPE
+	SYNTAX AgentsEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+		"Entry in the agents table"
+	INDEX {
+		agentID }
+ -- 1.3.6.1.4.1.9727.1.3.1.1 --  ::= { agentsTable 1 }
+
+AgentsEntry ::= SEQUENCE {
+	agentID                    OCTET STRING,
+	agentAddress               OCTET STRING,
+	statisticEventsDispatched  Counter64,
+	statisticMessagesQueued    Counter64,
+	statisticProcessorTimeUsed Counter64,
+	requestNumber              INTEGER,
+	requestParameter           OCTET STRING,
+	requestResult              OCTET STRING,
+	certificateInformation     OCTET STRING }
+
+agentID OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"IDReference"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.1 --  ::= { agentsEntry 1 }
+
+agentAddress OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Address"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.2 --  ::= { agentsEntry 2 }
+
+statisticEventsDispatched OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The number of events dispatched "
+ -- 1.3.6.1.4.1.9727.1.3.1.1.3 --  ::= { agentsEntry 3 }
+
+statisticMessagesQueued OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The number of messages currently queued"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.4 --  ::= { agentsEntry 4 }
+
+statisticProcessorTimeUsed OBJECT-TYPE
+	SYNTAX Counter64
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"The processor time used (in XXX)"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.5 --  ::= { agentsEntry 5 }
+
+requestNumber OBJECT-TYPE
+	SYNTAX INTEGER {
+			none(0),
+			sendmessage(1),
+			move(2),
+			checkpoint(3),
+			suspend(4),
+			die(5),
+			clone(6),
+			update(7),
+			register(8),
+			unregister(9) }
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+"Number representing an action request
+1 = sendmessage (content from requestParameter)
+2 = move
+3 = checkpoint
+4 = suspend
+5 = die
+6 = clone
+7 = update      (dnafile from requestParameter)
+8 = register    (service from requestParameter)
+9 = unregister  (service from requestParameter)"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.6 --  ::= { agentsEntry 6 }
+
+requestParameter OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-write
+	STATUS current
+	DESCRIPTION
+"Parameter for the acion request.
+For a sendmessage request, use this message format:
+  <performative> <langauge> <subject> [<arguments>]
+For a dnafile, use a relative file path"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.7 --  ::= { agentsEntry 7 }
+
+
+requestResult OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Result of the latest action request"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.8 --  ::= { agentsEntry 8 }
+
+
+certificateInformation OBJECT-TYPE
+	SYNTAX OCTET STRING
+	MAX-ACCESS read-only
+	STATUS current
+	DESCRIPTION
+"Certificate information"
+ -- 1.3.6.1.4.1.9727.1.3.1.1.9 --  ::= { agentsEntry 9 }
+
+
+----------------------------
+--User Agents table
+----------------------------
+
+user OBJECT IDENTIFIER 
+ -- 1.3.6.1.4.1.9727.1.4 --  ::= { habitat 4 }
+
+userAgentsTable OBJECT-TYPE
+	SYNTAX SEQUENCE  OF  UserAgentsEntry
+	MAX-ACCESS not-accessible
+	STATUS current
+	DESCRIPTION
+"Table with some additional user agent information.
+Most information on agents is found in the agents table."
+ -- 1.3.6.1.4.1.9727.1.4.1 --  ::=  { user 1 }
+
+userAgentsEntry OBJECT-TYPE
+	SYNTAX UserAgentsEntry
+	ACCESS  not-accessible
+	STATUS current
+	DESCRIPTION
+		"Entry in the user agents table"
+	INDEX {
+		userName,
+		agentName  }
+ -- 1.3.6.1.4.1.9727.1.4.1.1 --  ::=  { userAgentsTable 1 }
+
+UserAgentsEntry  ::=  SEQUENCE {
+	userName   OCTET STRING,
+	agentName  OCTET STRING,
+	userAgent  AGENTREF }
+
+agentName    OBJECT-TYPE    
+	SYNTAX        OCTET STRING
+	ACCESS        read-only
+	STATUS        current
+	DESCRIPTION
+"Name of the agent"
+ -- 1.3.6.1.4.1.9727.1.4.1.1.1 --  ::=  {  userAgentsEntry  1  }
+
+userAgent    OBJECT-TYPE    
+	SYNTAX        AGENTREF
+	ACCESS        read-only
+	STATUS        current
+	DESCRIPTION
+"Reference to the user agent.
+Refers to an entry in the agents table."
+ -- 1.3.6.1.4.1.9727.1.4.1.1.2 --  ::=  {  userAgentsEntry  2  }
+
+certificateUserName    OBJECT-TYPE    
+	SYNTAX        OCTET STRING
+	ACCESS        read-only
+	STATUS        current
+	DESCRIPTION
+"User name part of the agents certificate."
+ -- 1.3.6.1.4.1.9727.1.4.1.1.3 --  ::=  {  userAgentsEntry  3  }
+
+
+
+END
